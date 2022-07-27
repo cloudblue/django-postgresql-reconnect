@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  db_ram:
+    image: postgres:11.5
+    tmpfs:
+      - /var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: 1q2w3e
+      POSTGRES_DB: django_postgresql_reconnect
+    command: "postgres -c log_statement='all' -c log_destination='stderr'"
+
+  app_test:
+    container_name: django_postgresql_reconnect_test
+    image: django_postgresql_reconnect
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: bash -c 'flake8 && pytest'
+    volumes:
+      - ./:/app
+    depends_on:
+      - db_ram

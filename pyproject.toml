@@ -1,0 +1,60 @@
+[tool.poetry]
+name = "django-postgresql-reconnect"
+homepage = "https://connect.cloud.im"
+repository = "https://github.com/cloudblue/django-postgresql-reconnect"
+version = "0.0.1"
+description = ""
+authors = ["Django PostgreSQL database wrapper"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: Unix",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Database",
+]
+
+[tool.poetry.dependencies]
+python = "3.10.*"
+Django = "^4.0.6"
+psycopg2 = "^2.9.3"
+
+[tool.poetry.dev-dependencies]
+pytest = "7.*"
+pytest-cov = "3.*"
+pytest-factoryboy = "2.*"
+pytest-mock = "3.*"
+flake8 = "4.*"
+pytest-django = "^4.5.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+testpaths = "tests"
+log_cli = true
+addopts = "--junitxml=tests/reports/out.xml --cov=django_postgresql_reconnect --cov-report xml:tests/reports/coverage.xml  --cov-report html:tests/reports/cov_html"
+DJANGO_SETTINGS_MODULE = "tests.settings"
+
+[tool.coverage.report]
+omit = [
+    "*/migrations/*",
+    "*/config/*",
+    "*/settings/*",
+    "*/manage.py",
+    "*/wsgi.py",
+    "*/urls.py"
+]
+
+exclude_lines = [
+    "pragma: no cover",
+    "def __str__",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
