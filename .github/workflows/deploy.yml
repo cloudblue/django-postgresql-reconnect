@@ -11,6 +11,19 @@ jobs:
     strategy:
       matrix:
         python-version: [3.8]
+    services:
+      postgres:
+        image: postgres:11.5
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_PASSWORD: 1q2w3e
+          POSTGRES_DB: django_postgresql_reconnect
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
     - uses: actions/checkout@v2
       with:
@@ -30,6 +43,8 @@ jobs:
     - name: Testing
       run: |
         poetry run pytest
+      env:
+        POSTGRES_HOST: localhost
     - name: Extract tag name
       uses: actions/github-script@v3
       id: tag

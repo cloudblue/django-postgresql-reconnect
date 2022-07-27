@@ -1,17 +1,15 @@
 [tool.poetry]
 name = "django-postgresql-reconnect"
-homepage = "https://connect.cloud.im"
+homepage = "https://github.com/cloudblue/django-postgresql-reconnect"
 repository = "https://github.com/cloudblue/django-postgresql-reconnect"
-version = "0.0.1"
+version = "0.0.0"
 description = ""
-authors = ["Django PostgreSQL database wrapper"]
+authors = ["CloudBlue LLC"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Apache Software License",
     "Operating System :: Unix",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -19,9 +17,9 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "3.10.*"
-Django = "^4.0.6"
-psycopg2 = "^2.9.3"
+python = "^3.8"
+Django = "^3.2"
+psycopg2-binary = "2.*"
 
 [tool.poetry.dev-dependencies]
 pytest = "7.*"
@@ -39,7 +37,6 @@ build-backend = "poetry.core.masonry.api"
 testpaths = "tests"
 log_cli = true
 addopts = "--junitxml=tests/reports/out.xml --cov=django_postgresql_reconnect --cov-report xml:tests/reports/coverage.xml  --cov-report html:tests/reports/cov_html"
-DJANGO_SETTINGS_MODULE = "tests.settings"
 
 [tool.coverage.report]
 omit = [
