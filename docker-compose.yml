@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  db_ram:
+  postgres:
     image: postgres:11.5
     tmpfs:
       - /var/lib/postgresql/data
@@ -20,4 +20,4 @@ services:
     volumes:
       - ./:/app
     depends_on:
-      - db_ram
+      - postgres

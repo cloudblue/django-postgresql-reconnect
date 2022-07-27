@@ -21,7 +21,7 @@ class DatabaseWrapper(PgDatabaseWrapper):
         except InterfaceError:
             is_in_transaction = self.connection.status == STATUS_IN_TRANSACTION
             if self.settings_dict.get('RECONNECT') and (not is_in_transaction):
-                logger.exception('Reconnect to the database "%s"' % self.display_name)
+                logger.exception('Reconnect to the database "%s"', self.display_name)
                 self.close_if_unusable_or_obsolete()
                 self.connect()
                 return super().create_cursor(name)

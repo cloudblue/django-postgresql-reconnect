@@ -14,7 +14,20 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.8', '3.9', '3.10']
+    services:
+      postgres:
+        image: postgres:11.5
+        ports:
+        - 5432:5432
+        env:
+          POSTGRES_PASSWORD: 1q2w3e
+          POSTGRES_DB: django_postgresql_reconnect
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - name: Checkout project
         uses: actions/checkout@v2
@@ -35,10 +48,25 @@ jobs:
       - name: Testing
         run: |
           poetry run pytest
+        env:
+          POSTGRES_HOST: localhost
   sonar:
     name: Quality Analysis by sonar
     needs: [build]
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:11.5
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_PASSWORD: 1q2w3e
+          POSTGRES_DB: django_postgresql_reconnect
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
     - name: Checkout project
       uses: actions/checkout@v2
@@ -56,6 +84,8 @@ jobs:
     - name: Testing
       run: |
         poetry run pytest
+      env:
+        POSTGRES_HOST: localhost
     - name: Fix coverage report for Sonar
       run: |
         sed -i 's/\/home\/runner\/work\/django-postgresql-reconnect\/django-postgresql-reconnect\//\/github\/workspace\//g' ./tests/reports/coverage.xml
