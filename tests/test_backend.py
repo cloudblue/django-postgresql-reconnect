@@ -1,3 +1,5 @@
+#  Copyright © 2022 Ingram Micro Inc. All rights reserved.
+
 import logging
 from copy import deepcopy
 
@@ -7,7 +9,7 @@ from django.db import InterfaceError, connections, transaction
 from django.db.utils import ConnectionHandler
 
 
-@pytest.mark.django_db(transaction=True)
+@pytest.mark.django_db(transaction=True, databases=['default', 'sqlite'])
 def test_reconnect_enabled(caplog):
     connection = ConnectionHandler()['default']
     connection.connect()
@@ -17,12 +19,12 @@ def test_reconnect_enabled(caplog):
     cursor.execute('SELECT 1')
     assert cursor.fetchone() == (1,)
     assert caplog.record_tuples == [
-        ('django', logging.ERROR, 'Reconnect to the database "PostgreSQL"'),
+        ('django.db.backend', logging.ERROR, 'Reconnect to the database "default"'),
     ]
     assert 'psycopg2.InterfaceError: connection already closed' in caplog.records[0].exc_text
 
 
-@pytest.mark.django_db(transaction=True)
+@pytest.mark.django_db(transaction=True, databases=['default', 'sqlite'])
 def test_reconnect_disabled(settings):
     DATABASES = deepcopy(settings.DATABASES)
     DATABASES['default']['RECONNECT'] = False
@@ -38,7 +40,7 @@ def test_reconnect_disabled(settings):
     assert str(err.value) == 'connection already closed'
 
 
-@pytest.mark.django_db(transaction=True)
+@pytest.mark.django_db(transaction=True, databases=['default', 'sqlite'])
 @pytest.mark.parametrize('savepoint', (False, True))
 def test_reconnect_in_atomic_before_begin(savepoint, caplog):
     with transaction.atomic(savepoint=savepoint):
@@ -50,11 +52,11 @@ def test_reconnect_in_atomic_before_begin(savepoint, caplog):
         assert cursor.fetchone() == (1,)
 
     assert caplog.record_tuples == [
-        ('django', logging.ERROR, 'Reconnect to the database "PostgreSQL"'),
+        ('django.db.backend', logging.ERROR, 'Reconnect to the database "default"'),
     ]
 
 
-@pytest.mark.django_db(transaction=True)
+@pytest.mark.django_db(transaction=True, databases=['default', 'sqlite'])
 @pytest.mark.parametrize('savepoint', (False, True))
 def test_not_reconnect_in_transaction(savepoint, caplog):
     with pytest.raises(InterfaceError) as err:

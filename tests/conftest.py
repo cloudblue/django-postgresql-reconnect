@@ -1,6 +1,11 @@
+#  Copyright © 2022 Ingram Micro Inc. All rights reserved.
+
 import os
 
+import pytest
+
 from django.conf import settings
+from django.db import connections
 
 
 def pytest_configure():
@@ -14,6 +19,17 @@ def pytest_configure():
                 'HOST': os.getenv('POSTGRES_HOST', 'postgres'),
                 'RECONNECT': True,
             },
+            'sqlite': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': ':memory:',
+            },
         },
         SECRET_KEY='secret',
     )
+
+
+@pytest.fixture(autouse=True)
+def renew_connections():
+    for conn_name in connections:
+        connections[conn_name].close()
+        connections[conn_name].connect()
