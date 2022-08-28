@@ -28,6 +28,8 @@ class DatabaseWrapper(PgDatabaseWrapper):
         return bool(self.settings_dict.get('RECONNECT'))
 
     def should_reconnect(self):
+        if self.connection is None:
+            return False
         is_in_transaction = self.connection.status == STATUS_IN_TRANSACTION
         return self.reconnect_enabled() and (not is_in_transaction)
 
