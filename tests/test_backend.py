@@ -69,3 +69,12 @@ def test_not_reconnect_in_transaction(savepoint, caplog):
             connection.cursor()
 
     assert str(err.value) == 'connection already closed'
+
+
+@pytest.mark.django_db(transaction=True, databases=['default', 'sqlite'])
+def test_should_reconnect_connection_not_initialized():
+    connection = connections['default']
+    connection.close()
+    connection.connection = None
+
+    assert not connection.should_reconnect()
