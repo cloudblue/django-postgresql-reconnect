@@ -34,7 +34,7 @@ class DatabaseWrapper(PgDatabaseWrapper):
         return self.reconnect_enabled() and (not is_in_transaction)
 
     def reconnect(self):
-        logger.exception('Reconnect to the database "%s"', self.alias)
+        logger.warning('Reconnect to the database "%s"', self.alias, exc_info=True)
         self.close()
         self.connection = None
         self.connect()
