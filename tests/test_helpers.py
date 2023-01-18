@@ -22,7 +22,7 @@ def test_connection_closed(client, settings, caplog):
     connections['default'].cursor().execute('SELECT 1')
 
     assert caplog.record_tuples == [
-        ('django.db.backend', logging.ERROR, 'Reconnect to the database "default"'),
+        ('django.db.backend', logging.WARNING, 'Reconnect to the database "default"'),
     ]
 
 
@@ -33,7 +33,7 @@ def test_connection_not_usable(client, settings, mocker, caplog):
     connections['default'].cursor().execute('SELECT 1')
 
     assert caplog.record_tuples == [
-        ('django.db.backend', logging.ERROR, 'Reconnect to the database "default"'),
+        ('django.db.backend', logging.WARNING, 'Reconnect to the database "default"'),
     ]
 
 

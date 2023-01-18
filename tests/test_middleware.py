@@ -1,5 +1,7 @@
 #  Copyright © 2022 Ingram Micro Inc. All rights reserved.
 
+import logging
+
 import pytest
 
 from django.http import HttpResponse
@@ -17,8 +19,12 @@ def view(request):
 
 
 @pytest.mark.django_db(transaction=True, databases=['default', 'sqlite'])
-def test_middleware_connection_closed(client):
+def test_middleware_connection_closed(client, caplog):
     connections['default'].connection.close()
     response = django_postgresql_reconnect.middleware(view)(RequestFactory().get('/'))
 
     assert response.content == b'echo'
+
+    assert caplog.record_tuples == [
+        ('django.db.backend', logging.WARNING, 'Reconnect to the database "default"'),
+    ]

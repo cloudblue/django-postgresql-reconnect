@@ -19,7 +19,7 @@ def test_reconnect_enabled(caplog):
     cursor.execute('SELECT 1')
     assert cursor.fetchone() == (1,)
     assert caplog.record_tuples == [
-        ('django.db.backend', logging.ERROR, 'Reconnect to the database "default"'),
+        ('django.db.backend', logging.WARNING, 'Reconnect to the database "default"'),
     ]
     assert 'psycopg2.InterfaceError: connection already closed' in caplog.records[0].exc_text
 
@@ -52,7 +52,7 @@ def test_reconnect_in_atomic_before_begin(savepoint, caplog):
         assert cursor.fetchone() == (1,)
 
     assert caplog.record_tuples == [
-        ('django.db.backend', logging.ERROR, 'Reconnect to the database "default"'),
+        ('django.db.backend', logging.WARNING, 'Reconnect to the database "default"'),
     ]
 
 
