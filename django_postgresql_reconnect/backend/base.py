@@ -2,11 +2,15 @@
 
 import logging
 
-from psycopg2 import InterfaceError
-from psycopg2.extensions import STATUS_IN_TRANSACTION
-
 from django.utils.asyncio import async_unsafe
+from django.core.exceptions import ImproperlyConfigured
 from django.db.backends.postgresql.base import DatabaseWrapper as PgDatabaseWrapper
+
+try:
+    from psycopg2 import InterfaceError
+    from psycopg2.extensions import STATUS_IN_TRANSACTION
+except ImportError as e:
+    raise ImproperlyConfigured("Error loading psycopg2 module: %s" % e)
 
 
 logger = logging.getLogger('django.db.backend')
