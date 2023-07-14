@@ -18,7 +18,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-Django = "^3.2"
+Django = ">=3.2,<5"
 
 [tool.poetry.dev-dependencies]
 pytest = "7.*"
