@@ -1,4 +1,4 @@
-#  Copyright © 2022 Ingram Micro Inc. All rights reserved.
+#  Copyright © 2025 CloudBlue. All rights reserved.
 
 from django_postgresql_reconnect import check_pgsql_connections
 
