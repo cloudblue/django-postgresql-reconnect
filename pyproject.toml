@@ -40,6 +40,9 @@ testpaths = "tests"
 log_cli = true
 addopts = "--junitxml=tests/reports/out.xml --cov=django_postgresql_reconnect --cov-report xml:tests/reports/coverage.xml  --cov-report html:tests/reports/cov_html"
 
+[tool.coverage.run]
+relative_files = true
+
 [tool.coverage.report]
 omit = [
     "*/migrations/*",
