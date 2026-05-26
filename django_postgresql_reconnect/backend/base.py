@@ -7,7 +7,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db.backends.postgresql.base import DatabaseWrapper as PgDatabaseWrapper
 
 try:
-    from psycopg2 import InterfaceError
+    from psycopg2 import InterfaceError, OperationalError
     from psycopg2.extensions import STATUS_IN_TRANSACTION
 except ImportError as e:
     raise ImproperlyConfigured("Error loading psycopg2 module: %s" % e)
@@ -22,9 +22,14 @@ class DatabaseWrapper(PgDatabaseWrapper):
     def create_cursor(self, name=None):
         try:
             return super().create_cursor(name)
-        except InterfaceError:
+        except (InterfaceError, OperationalError):
             if self.should_reconnect():
-                self.reconnect()
+                try:
+                    self.reconnect()
+                except OperationalError:
+                    # reconnect() → connect() failed (e.g. transient TCP timeout).
+                    # connection is now None; attempt one more fresh connect before giving up.
+                    self.ensure_connection()
                 return super().create_cursor(name)
             raise
 
