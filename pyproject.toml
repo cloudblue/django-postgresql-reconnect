@@ -19,7 +19,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
-Django = ">=3.2,<5"
+Django = ">=3.2,<6"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "7.*"
