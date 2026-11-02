@@ -59,7 +59,7 @@ def some_awesome_function():
 
 ## Testing
 
-1. Python 3.8+
+1. Python 3.10+
 0. Install dependencies `pip install poetry && poetry install`
 
 Check code style: `poetry run flake8`
