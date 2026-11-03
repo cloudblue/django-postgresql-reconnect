@@ -18,11 +18,11 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.10"
-Django = ">=3.2,<6"
+Django = ">=5.2.19,<6"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "7.*"
-pytest-cov = "3.*"
+pytest = "9.*"
+pytest-cov = "7.*"
 pytest-factoryboy = "2.*"
 pytest-mock = "3.*"
 typing-extensions = ">=4.6.0"
