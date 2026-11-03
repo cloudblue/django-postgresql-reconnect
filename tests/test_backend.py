@@ -11,9 +11,21 @@ from django.db import InterfaceError, connections, transaction
 from django.db.utils import ConnectionHandler
 
 
-@pytest.mark.django_db(transaction=True, databases=['default', 'sqlite'])
-def test_reconnect_enabled(caplog):
+@pytest.fixture
+def standalone_connection():
+    """A connection outside django.db.connections, closed after the test.
+
+    Nothing else closes it, and on Django 5.2 a connection left open makes the teardown
+    of the test database fail.
+    """
     connection = ConnectionHandler()['default']
+    yield connection
+    connection.close()
+
+
+@pytest.mark.django_db(transaction=True, databases=['default', 'sqlite'])
+def test_reconnect_enabled(standalone_connection, caplog):
+    connection = standalone_connection
     connection.connect()
     connection.connection.close()
 
@@ -83,11 +95,11 @@ def test_should_reconnect_connection_not_initialized():
 
 
 @pytest.mark.django_db(transaction=True, databases=['default', 'sqlite'])
-def test_reconnect_on_operational_error_from_cursor(caplog):
+def test_reconnect_on_operational_error_from_cursor(standalone_connection, caplog):
     """OperationalError from cursor() (zombie connection) triggers reconnect."""
     from django.db.backends.postgresql.base import DatabaseWrapper as PgDatabaseWrapper
 
-    connection = ConnectionHandler()['default']
+    connection = standalone_connection
     connection.connect()
 
     original_create_cursor = PgDatabaseWrapper.create_cursor
@@ -111,9 +123,9 @@ def test_reconnect_on_operational_error_from_cursor(caplog):
 
 
 @pytest.mark.django_db(transaction=True, databases=['default', 'sqlite'])
-def test_reconnect_retries_when_connect_fails_once(caplog):
+def test_reconnect_retries_when_connect_fails_once(standalone_connection, caplog):
     """If reconnect() → connect() fails transiently, a second attempt is made."""
-    connection = ConnectionHandler()['default']
+    connection = standalone_connection
     connection.connect()
     connection.connection.close()  # simulate server-side disconnect (InterfaceError on cursor)
 
